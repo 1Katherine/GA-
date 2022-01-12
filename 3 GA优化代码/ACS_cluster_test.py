@@ -33,16 +33,27 @@ def build_model(name):
     不重新建模，使用已经构建好的模型
 '''
 def build_training_model(name):
+    import warnings
     if name.lower() == "lgb":
-        model = joblib.load('./files100/lgb/lgb.pkl')
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", category=UserWarning)
+            model = joblib.load('./files100/lgb/lgb.pkl')
     elif name.lower() == "gbdt":
-        model = joblib.load('./files100/gbdt/gbdt.pkl')
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", category=UserWarning)
+            model = joblib.load('./files100/gbdt/gbdt.pkl')
     elif name.lower() == "rf":
-        model = joblib.load('./files100/rf/rf.pkl')
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", category=UserWarning)
+            model = joblib.load('./files100/rf/rf.pkl')
     elif name.lower() == 'xgb':
-        model = joblib.load('./files100/xgb/xgb.pkl')
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", category=UserWarning)
+            model = joblib.load('./files100/xgb/xgb.pkl')
     elif name.lower() == 'ada':
-        model = joblib.load('./files100/ada/ada.pkl')
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", category=UserWarning)
+            model = joblib.load('./files100/ada/ada.pkl')
     else:
         raise Exception("[!] There is no option ")
     return model
@@ -130,9 +141,9 @@ if __name__ == '__main__':
     maxIter = 10  # 迭代次数
     # probMut = 0.01  # 变异概率
     probMut = np.array([0.01, 0.1, 0.02, 0.03, 0.05, 0.06, 0.07, 0.8, 0.03, 0.1])
-    # ga = GA(func=fitFunc, n_dim=nDim, size_pop=sizePop, max_iter=maxIter, prob_mut=probMut, lb=confLb, ub=confUb,
-    #         precision=precisions)
-    ga = RCGA(func=fitFunc, n_dim=nDim, size_pop=sizePop, max_iter=maxIter, prob_mut=probMut, lb=confLb, ub=confUb)
+    ga = GA(func=fitFunc, n_dim=nDim, size_pop=sizePop, max_iter=maxIter, prob_mut=probMut, lb=confLb, ub=confUb,
+            precision=precisions)
+    # ga = RCGA(func=fitFunc, n_dim=nDim, size_pop=sizePop, max_iter=maxIter, prob_mut=probMut, lb=confLb, ub=confUb)
     best_x, best_y = ga.run()
     endTime = datetime.datetime.now()
     searchDuration = (endTime - startTime).seconds

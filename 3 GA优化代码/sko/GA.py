@@ -51,6 +51,10 @@ class GeneticAlgorithmBase(SkoBase, metaclass=ABCMeta):
     def chrom2x(self, Chrom):
         pass
 
+    @abstractmethod
+    def mychrom2x(self, Chrom):
+        pass
+
     # 根据X 和 func 返回性能和y的值
     def x2y(self):
         print('-------------------- 开始 x2y(self) ----------------------', file = logfile)
@@ -86,7 +90,8 @@ class GeneticAlgorithmBase(SkoBase, metaclass=ABCMeta):
     def run(self, max_iter=None):
         self.max_iter = max_iter or self.max_iter
         for i in range(self.max_iter):
-            self.X = self.chrom2x(self.Chrom) # 二进制种群对应的实数值个体
+            # self.X = self.chrom2x(self.Chrom) # 二进制种群对应的实数值个体
+            self.X = self.mychrom2x(self.Chrom)
             self.Y = self.x2y()
 
             self.ranking()
@@ -154,6 +159,8 @@ class GA(GeneticAlgorithmBase):
                  constraint_eq=tuple(), constraint_ueq=tuple(),
                  precision=1e-7):
         super().__init__(func, n_dim, size_pop, max_iter, prob_mut, constraint_eq, constraint_ueq)
+        self.rs_sizepop = int(self.size_pop / 2) # 用于随机采样生成的个体
+        self.lhs_sizepop = self.size_pop - self.rs_sizepop # 用于其他采样方式生成的个体
         # n_dim = 搜索参数的个数（比如有10个需要优化的重要参数 n_dim = 10）
         self.lb, self.ub = np.array(lb) * np.ones(self.n_dim), np.array(ub) * np.ones(self.n_dim)
         # 返回一个指定形状和数据类型的新数组，并且数组中的值都为1   precision = [0.01, 1.0, 1.0, 1.0, 0.01, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -181,6 +188,14 @@ class GA(GeneticAlgorithmBase):
                                       , self.ub) # ub_extend = ndarray(10,)
         # 染色体长度（所有变量的基因数量总和） len_chrom = 81
         self.len_chrom = sum(self.Lind)
+
+        # ------------新增代码 start--------------
+        self.bitsPower = np.ceil(Lind_raw).astype(int)
+        self.realPrecision = np.zeros(shape=(len(self.bitsPower)))
+        for i in range(len(self.bitsPower)):
+            # 真实精度
+            self.realPrecision[i] = (self.ub[i] - self.lb[i] + 1) / 2 ** self.bitsPower[i]
+        # ------------新增代码 end--------------
         # 生成初始种群  Chrom = [[1 1 0... 0 1 1]
         self.crtbp()
 
@@ -190,8 +205,65 @@ class GA(GeneticAlgorithmBase):
         # 返回一个随机整数，范围从[0,2), 随机数的尺寸为 size_pop * len_chrom (sizePop * 81)
         # Chrom = [[1 1 0... 0 1 1]
         #          [0 0 0... 0 1 0]....
-        self.Chrom = np.random.randint(low=0, high=2, size=(self.size_pop, self.len_chrom))
+        # ------------注释代码 start--------------
+        # self.Chrom = np.random.randint(low=0, high=2, size=(self.size_pop, self.len_chrom))
+        # ------------注释代码 end----------------
+        # ------------新增代码 start--------------
+        Chrom_rs = np.random.randint(low=0, high=2, size=(self.rs_sizepop, self.len_chrom))
+        lhssamples = self.samples()
+        Chrom_sample = self.numTo2x(lhssamples)
+        # 垂直拼接两个矩阵
+        self.Chrom = np.vstack((Chrom_rs, Chrom_sample))
+        self.Chrom = self.Chrom.astype(np.int32)
+        # ------------新增代码 end--------------
         return self.Chrom
+
+    # ------------新增代码 start--------------
+    # 采样实数值样本
+    def samples(self):
+        self.bounds = list(zip(self.lb, self.ub))
+        l = LHS_sample.LHSample(self.n_dim, self.bounds, self.lhs_sizepop)
+        lhsample = l.lhs()
+        print('产生的样本lhsample = \n' + str(lhsample))
+        for sample in lhsample:
+            for dim in range(self.n_dim):
+                if self.precision[dim] == 1.0:
+                    sample[dim] = round(sample[dim])
+        print('根据精度操作样本lhsample = \n' + str(lhsample))
+        return lhsample
+
+    # 样本转二进制种群
+    def numTo2x(self, samples):
+        self.len_Chrom = self.bitsPower.sum()
+        self.Chrom = np.zeros(shape=(len(samples), self.len_Chrom))
+        self.cumsum_len_segment = self.bitsPower.cumsum()
+        for row, lhs in enumerate(samples):
+            X = np.zeros(shape=(self.len_Chrom))
+            for dim in range(self.n_dim):
+                code = self.GetCodeParameter(lhs[dim], dim)
+                if dim == 0:
+                    X[:self.cumsum_len_segment[dim]] = code
+                else:
+                    X[self.cumsum_len_segment[dim - 1]:self.cumsum_len_segment[dim]] = code
+            self.Chrom[row:row + 1, :] = X
+        return self.Chrom
+
+    # x值所在的维度
+    def GetCodeParameter(self, x, x_dim):
+        # x 对应的十进制数
+        codenum = (x - self.lb[x_dim]) / self.realPrecision[x_dim]
+        # 十进制转二进制
+        mycode = ''
+        if bin(int(codenum))[0] == '-':
+            mycode = bin(int(codenum))[3:]
+        if bin(int(codenum))[0] == '0':
+            mycode = bin(int(codenum))[2:]
+        while len(mycode) < self.bitsPower[x_dim]:
+            # 头部插入0
+            mycode = '0' + mycode
+        # print(code)
+        return np.array(list(mycode))
+    # ------------新增代码 end--------------
 
     '''
         根据该变量对应的基因片段的二进制值，计算该二进制值对应的范围内的实数值（二进制->实数）
@@ -209,8 +281,39 @@ class GA(GeneticAlgorithmBase):
         # 返回数组，个数为30（种群个数）
         res = (b * mask).sum(axis=1) / mask.sum()
         return res
-        # return (b * mask).sum(axis=1) / mask.sum()
 
+    # ------------新增代码 start--------------
+    def getGrayValue(self, graycode, code_dim):
+        X = []
+        for code in graycode:
+            graycode_str = code.tolist()
+            code_str = ''
+            for c in graycode_str:
+                if c == 0.0:
+                    code_str = code_str + '0'
+                if c == 1.0:
+                    code_str = code_str + '1'
+            X.append(int(code_str , 2) * self.realPrecision[code_dim] + self.lb[code_dim])
+        return np.array(X)
+
+    # 我的：二进制种群计算实数值
+    def mychrom2x(self, Chrom):
+        cumsum_len_segment = self.bitsPower.cumsum()
+        X = np.zeros(shape=(self.size_pop, self.n_dim))
+        # i = 0\1\2\3...9（变量个数）
+        for i, j in enumerate(cumsum_len_segment):
+            if i == 0:
+                # 取初始种群 Chrom 的前6列 （第一个变量）
+                Chrom_temp = Chrom[:, :cumsum_len_segment[0]]
+            else:
+                # 取 Chorm 的第 cumsum_len_segment[i - 1] 到第 cumsum_len_segment[i]列（其他变量列）
+                # 取每一个变量对应的染色体子片段
+                Chrom_temp = Chrom[:, cumsum_len_segment[i - 1]:cumsum_len_segment[i]]
+            # 将每一个变量的片段染色体的 0-1 之间的实数值放入返回值X的对应列中
+            X[:, i] = self.getGrayValue(Chrom_temp, i)
+        return X
+        # print('X = ' + str(X))
+    # ------------新增代码 end--------------
 
     def chrom2x(self, Chrom):
         print('----------------------- 开始 chrom2x(self, Chrom) -------------------------', file = logfile)
@@ -430,6 +533,9 @@ class RCGA(GeneticAlgorithmBase):
     selection = selection.selection_tournament_faster
     crossover = crossover_SBX
     mutation = mutation
+
+    def mychrom2x(self, Chrom):
+        pass
 
 
 # 用遗传算法来解决TSP（旅行推销员问题）
