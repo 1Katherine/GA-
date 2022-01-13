@@ -61,7 +61,6 @@ def crossover_2point_bit(self):
         if n1 > n2:
             n1, n2 = n2, n1 # 限制 n1 < n2
         mask[i, n1:n2] = 1  # mask 的第i行，n1-n2全设置为1
-    print('Chrom1.shape = ' + str(Chrom1.shape) + ',Chrom2.shape = ' + str(Chrom2.shape) + 'mask.shape = ' + str(mask.shape))
     mask2 = (Chrom1 ^ Chrom2) & mask
     Chrom1 ^= mask2
     Chrom2 ^= mask2

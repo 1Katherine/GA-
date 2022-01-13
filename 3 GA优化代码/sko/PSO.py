@@ -90,7 +90,7 @@ class PSO(SkoBase):
         self.pop = pop  # number of particles
         self.n_dim = n_dim  # dimension of particles, which is the number of variables of func
         self.max_iter = max_iter  # max iter
-        self.verbose = verbose  # print the result of each iter or not
+        self.verbose = verbose  # print the binary_result of each iter or not
 
         self.lb, self.ub = np.array(lb) * np.ones(self.n_dim), np.array(ub) * np.ones(self.n_dim)
         assert self.n_dim == len(self.lb) == len(self.ub), 'dim == len(lb) == len(ub) is not True'

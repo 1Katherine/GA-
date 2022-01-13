@@ -1,0 +1,292 @@
+
+binary GA gdbt ,sizePop=44 ,maxIter=10
+['spark.executor.cores', 'spark.scheduler.revive.interval']
+best_x : [  2. 548.]
+best_y : [169.97366]
+generation_best 
+
+{'spark.executor.cores': 2.0, 'spark.scheduler.revive.interval': 548.0, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 2.267191687795013, 'spark.scheduler.revive.interval': 500.0, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 1.175909156917721, 'spark.scheduler.revive.interval': 743.9601243999421, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 2.276436568483484, 'spark.scheduler.revive.interval': 705.0701434374118, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 1.0, 'spark.scheduler.revive.interval': 954.8775235302207, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 2.572780712975968, 'spark.scheduler.revive.interval': 519.259658744961, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 2.015463908249778, 'spark.scheduler.revive.interval': 540.9573696020769, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 2.7565503405970544, 'spark.scheduler.revive.interval': 902.7735326845517, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 4.0, 'spark.scheduler.revive.interval': 605.2797469778731, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 3.357082658779926, 'spark.scheduler.revive.interval': 899.0631984296783, 'runtime': 169.97366000000008}
+
+binary GA rf ,sizePop=44 ,maxIter=10
+['spark.executor.cores', 'spark.scheduler.revive.interval']
+best_x : [  2. 548.]
+best_y : [171.29599]
+generation_best 
+
+{'spark.executor.cores': 2.0, 'spark.scheduler.revive.interval': 548.0, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 2.9171179567323975, 'spark.scheduler.revive.interval': 500.0, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 3.876311727138203, 'spark.scheduler.revive.interval': 500.0, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 1.654054271768692, 'spark.scheduler.revive.interval': 632.3751760108604, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 1.425168738844294, 'spark.scheduler.revive.interval': 500.0, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 1.1198572036990972, 'spark.scheduler.revive.interval': 624.7072144857748, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 2.212762025970423, 'spark.scheduler.revive.interval': 728.0392996663531, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 1.0561856988235334, 'spark.scheduler.revive.interval': 623.1935901800657, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 2.266023091648177, 'spark.scheduler.revive.interval': 940.2049462261216, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 2.2707932393525763, 'spark.scheduler.revive.interval': 733.9223283654326, 'runtime': 171.29599000000005}
+
+binary GA ada ,sizePop=44 ,maxIter=10
+['spark.scheduler.revive.interval', 'spark.executor.cores']
+best_x : [545.72103349   3.61111265]
+best_y : [180.737]
+generation_best 
+
+{'spark.scheduler.revive.interval': 673.0, 'spark.executor.cores': 4.0, 'runtime': 187.5896111111111}
+{'spark.scheduler.revive.interval': 545.7210334918242, 'spark.executor.cores': 3.6111126517524403, 'runtime': 180.737}
+{'spark.scheduler.revive.interval': 570.3843871576231, 'spark.executor.cores': 4.0, 'runtime': 180.737}
+{'spark.scheduler.revive.interval': 541.3226065774569, 'spark.executor.cores': 3.7328998099457475, 'runtime': 180.737}
+{'spark.scheduler.revive.interval': 534.0417042822153, 'spark.executor.cores': 3.939155246786958, 'runtime': 180.737}
+{'spark.scheduler.revive.interval': 541.23625583259, 'spark.executor.cores': 3.9375045474892345, 'runtime': 180.737}
+{'spark.scheduler.revive.interval': 545.8348081155649, 'spark.executor.cores': 3.9007988459102947, 'runtime': 180.737}
+{'spark.scheduler.revive.interval': 537.320615689178, 'spark.executor.cores': 3.945029205280619, 'runtime': 180.737}
+{'spark.scheduler.revive.interval': 542.727006181962, 'spark.executor.cores': 3.956989883770257, 'runtime': 180.737}
+{'spark.scheduler.revive.interval': 541.7565518897222, 'spark.executor.cores': 4.0, 'runtime': 180.737}
+
+binary GA xgb ,sizePop=44 ,maxIter=10
+['spark.executor.cores', 'spark.executor.instances', 'spark.scheduler.revive.interval', 'spark.executor.memoryOverhead']
+best_x : [  3.90968825   7.64914099 514.72063271 673.84353993]
+best_y : [176.27263]
+generation_best 
+
+{'spark.executor.cores': 3.0, 'spark.executor.instances': 6.0, 'spark.scheduler.revive.interval': 597.0, 'spark.executor.memoryOverhead': 674.0, 'runtime': 183.17903}
+{'spark.executor.cores': 3.6475311359282268, 'spark.executor.instances': 6.199267076726325, 'spark.scheduler.revive.interval': 607.199991402765, 'spark.executor.memoryOverhead': 442.8528917477531, 'runtime': 180.3876}
+{'spark.executor.cores': 3.8246831551260327, 'spark.executor.instances': 7.585651338330226, 'spark.scheduler.revive.interval': 528.1859654807967, 'spark.executor.memoryOverhead': 666.0136208674628, 'runtime': 176.27289}
+{'spark.executor.cores': 3.7717659358569406, 'spark.executor.instances': 7.591369117820239, 'spark.scheduler.revive.interval': 523.0647077523093, 'spark.executor.memoryOverhead': 666.7054100953881, 'runtime': 176.27289}
+{'spark.executor.cores': 3.90968825482138, 'spark.executor.instances': 7.649140991236046, 'spark.scheduler.revive.interval': 514.7206327052779, 'spark.executor.memoryOverhead': 673.8435399317949, 'runtime': 176.27263}
+{'spark.executor.cores': 3.819462005725236, 'spark.executor.instances': 7.0409954078503665, 'spark.scheduler.revive.interval': 515.7872970953606, 'spark.executor.memoryOverhead': 674.4292788499021, 'runtime': 176.27263}
+{'spark.executor.cores': 3.884732855192121, 'spark.executor.instances': 8.0, 'spark.scheduler.revive.interval': 524.7156319675647, 'spark.executor.memoryOverhead': 673.4248516604705, 'runtime': 176.27263}
+{'spark.executor.cores': 3.767092653661649, 'spark.executor.instances': 5.983260323214933, 'spark.scheduler.revive.interval': 512.6942773416708, 'spark.executor.memoryOverhead': 673.992339972918, 'runtime': 176.27263}
+{'spark.executor.cores': 3.842478165962798, 'spark.executor.instances': 6.492632139706628, 'spark.scheduler.revive.interval': 515.6477894573261, 'spark.executor.memoryOverhead': 673.3055553617519, 'runtime': 176.27263}
+{'spark.executor.cores': 3.549915301224554, 'spark.executor.instances': 7.734239692940014, 'spark.scheduler.revive.interval': 525.4967939973569, 'spark.executor.memoryOverhead': 673.0159598680502, 'runtime': 176.27263}
+
+binary GA xgb ,sizePop=44 ,maxIter=10
+['spark.executor.cores', 'spark.executor.instances', 'spark.scheduler.revive.interval', 'spark.executor.memoryOverhead']
+best_x : [  3.6600811    6.13328159 555.49718027 668.06903302]
+best_y : [176.27289]
+generation_best 
+
+{'spark.executor.cores': 3.0, 'spark.executor.instances': 6.0, 'spark.scheduler.revive.interval': 597.0, 'spark.executor.memoryOverhead': 674.0, 'runtime': 183.17903}
+{'spark.executor.cores': 3.6600811042307853, 'spark.executor.instances': 6.133281594235148, 'spark.scheduler.revive.interval': 555.4971802698967, 'spark.executor.memoryOverhead': 668.0690330219004, 'runtime': 176.27289}
+{'spark.executor.cores': 3.707725047236772, 'spark.executor.instances': 6.080139593881129, 'spark.scheduler.revive.interval': 609.2679172637091, 'spark.executor.memoryOverhead': 662.7912226814278, 'runtime': 176.27289}
+{'spark.executor.cores': 3.8316348354853917, 'spark.executor.instances': 7.1792479401412095, 'spark.scheduler.revive.interval': 796.9509240450876, 'spark.executor.memoryOverhead': 670.2281590782875, 'runtime': 176.27289}
+{'spark.executor.cores': 3.9356752884067956, 'spark.executor.instances': 6.2092949946870615, 'spark.scheduler.revive.interval': 500.0, 'spark.executor.memoryOverhead': 667.3637793486103, 'runtime': 176.27289}
+{'spark.executor.cores': 3.9588583522659806, 'spark.executor.instances': 8.0, 'spark.scheduler.revive.interval': 714.4082496322806, 'spark.executor.memoryOverhead': 668.8534900897549, 'runtime': 176.27289}
+{'spark.executor.cores': 3.849596554567649, 'spark.executor.instances': 6.667488033823904, 'spark.scheduler.revive.interval': 674.9083015317606, 'spark.executor.memoryOverhead': 671.8828467050954, 'runtime': 176.27289}
+{'spark.executor.cores': 3.8878679269124508, 'spark.executor.instances': 7.868456174819936, 'spark.scheduler.revive.interval': 500.0, 'spark.executor.memoryOverhead': 663.1357726254602, 'runtime': 176.27289}
+{'spark.executor.cores': 4.0, 'spark.executor.instances': 7.539746534039093, 'spark.scheduler.revive.interval': 542.653280538564, 'spark.executor.memoryOverhead': 569.2557197884332, 'runtime': 180.35922}
+{'spark.executor.cores': 3.9326436565726324, 'spark.executor.instances': 8.0, 'spark.scheduler.revive.interval': 544.4637887741856, 'spark.executor.memoryOverhead': 583.4977055290303, 'runtime': 180.35922}
+
+binary GA xgb ,sizePop=44 ,maxIter=10
+['spark.executor.cores', 'spark.executor.instances', 'spark.scheduler.revive.interval', 'spark.executor.memoryOverhead']
+best_x : [  3.77800657   4.14692453 705.32408432 673.94553599]
+best_y : [176.27263]
+generation_best 
+
+{'spark.executor.cores': 3.0, 'spark.executor.instances': 6.0, 'spark.scheduler.revive.interval': 597.0, 'spark.executor.memoryOverhead': 674.0, 'runtime': 183.17903}
+{'spark.executor.cores': 3.9098936444681818, 'spark.executor.instances': 7.07757453656056, 'spark.scheduler.revive.interval': 663.0715315785592, 'spark.executor.memoryOverhead': 665.6848906055811, 'runtime': 176.27289}
+{'spark.executor.cores': 3.8221266030711214, 'spark.executor.instances': 4.1793226321950465, 'spark.scheduler.revive.interval': 767.895294851545, 'spark.executor.memoryOverhead': 660.5632438157593, 'runtime': 176.27289}
+{'spark.executor.cores': 3.9117509315158845, 'spark.executor.instances': 5.636313475352519, 'spark.scheduler.revive.interval': 944.9950134118436, 'spark.executor.memoryOverhead': 669.7436110978764, 'runtime': 176.27289}
+{'spark.executor.cores': 3.778006571695888, 'spark.executor.instances': 4.146924525503949, 'spark.scheduler.revive.interval': 705.3240843175323, 'spark.executor.memoryOverhead': 673.945535986772, 'runtime': 176.27263}
+{'spark.executor.cores': 3.9011121137610303, 'spark.executor.instances': 4.0, 'spark.scheduler.revive.interval': 683.8329125478481, 'spark.executor.memoryOverhead': 674.0307788144873, 'runtime': 176.27263}
+{'spark.executor.cores': 3.9349205166480608, 'spark.executor.instances': 4.0, 'spark.scheduler.revive.interval': 689.6792556453794, 'spark.executor.memoryOverhead': 674.1272466206692, 'runtime': 176.27263}
+{'spark.executor.cores': 3.9349205166480608, 'spark.executor.instances': 6.259567313019288, 'spark.scheduler.revive.interval': 646.4047088010437, 'spark.executor.memoryOverhead': 674.1272466206692, 'runtime': 176.27263}
+{'spark.executor.cores': 3.9469296118629935, 'spark.executor.instances': 5.745350475287919, 'spark.scheduler.revive.interval': 626.1465999834744, 'spark.executor.memoryOverhead': 673.8913189219139, 'runtime': 176.27263}
+{'spark.executor.cores': 3.9512755827182278, 'spark.executor.instances': 4.363654087658292, 'spark.scheduler.revive.interval': 500.0, 'spark.executor.memoryOverhead': 673.5216623230615, 'runtime': 176.27263}
+
+binary GA rf ,sizePop=44 ,maxIter=10
+['spark.executor.cores', 'spark.scheduler.revive.interval']
+best_x : [  2. 548.]
+best_y : [171.29599]
+generation_best 
+
+{'spark.executor.cores': 2.0, 'spark.scheduler.revive.interval': 548.0, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 2.7136556134379886, 'spark.scheduler.revive.interval': 746.8603386425702, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 1.4555888409290314, 'spark.scheduler.revive.interval': 587.5359239889053, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 3.9522049615664843, 'spark.scheduler.revive.interval': 803.2397105640807, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 2.7885362000049234, 'spark.scheduler.revive.interval': 578.0215145275606, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 4.0, 'spark.scheduler.revive.interval': 577.3899050643327, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 1.0215668948240677, 'spark.scheduler.revive.interval': 567.0992098371712, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 1.0, 'spark.scheduler.revive.interval': 569.0023345574891, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 1.0, 'spark.scheduler.revive.interval': 569.0023345574891, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 2.3557724267410545, 'spark.scheduler.revive.interval': 501.86461993160106, 'runtime': 171.29599000000005}
+
+binary GA ada ,sizePop=44 ,maxIter=10
+['spark.scheduler.revive.interval', 'spark.executor.cores']
+best_x : [551.30049561   4.        ]
+best_y : [180.737]
+generation_best 
+
+{'spark.scheduler.revive.interval': 673.0, 'spark.executor.cores': 4.0, 'runtime': 187.5896111111111}
+{'spark.scheduler.revive.interval': 551.30049560563, 'spark.executor.cores': 4.0, 'runtime': 180.737}
+{'spark.scheduler.revive.interval': 536.5016658699561, 'spark.executor.cores': 3.9105548591032395, 'runtime': 180.737}
+{'spark.scheduler.revive.interval': 547.4311566767966, 'spark.executor.cores': 4.0, 'runtime': 180.737}
+{'spark.scheduler.revive.interval': 536.0558185178994, 'spark.executor.cores': 3.550745913960462, 'runtime': 180.737}
+{'spark.scheduler.revive.interval': 530.0535237297662, 'spark.executor.cores': 3.7588443128560005, 'runtime': 180.737}
+{'spark.scheduler.revive.interval': 530.2627596056536, 'spark.executor.cores': 3.80343563376422, 'runtime': 180.737}
+{'spark.scheduler.revive.interval': 539.2288636790818, 'spark.executor.cores': 3.9569195102143104, 'runtime': 180.737}
+{'spark.scheduler.revive.interval': 531.2690516218622, 'spark.executor.cores': 3.866294745297523, 'runtime': 180.737}
+{'spark.scheduler.revive.interval': 546.8741297675384, 'spark.executor.cores': 3.900713865938476, 'runtime': 180.737}
+
+binary GA gdbt ,sizePop=44 ,maxIter=10
+['spark.executor.cores', 'spark.scheduler.revive.interval']
+best_x : [  2. 548.]
+best_y : [169.97366]
+generation_best 
+
+{'spark.executor.cores': 2.0, 'spark.scheduler.revive.interval': 548.0, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 2.2427148211957766, 'spark.scheduler.revive.interval': 624.8198143509952, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 1.6466235241420586, 'spark.scheduler.revive.interval': 500.0, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 2.791736738165927, 'spark.scheduler.revive.interval': 507.11537333250715, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 3.468099362742168, 'spark.scheduler.revive.interval': 501.7742525790025, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 1.6858304627432585, 'spark.scheduler.revive.interval': 746.2579087482827, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 2.8828841253705133, 'spark.scheduler.revive.interval': 642.2675894506903, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 2.364433774135315, 'spark.scheduler.revive.interval': 850.6104325668214, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 1.786960131318972, 'spark.scheduler.revive.interval': 1000.0, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 1.3133511180072928, 'spark.scheduler.revive.interval': 667.8585013344245, 'runtime': 169.97366000000008}
+
+binary GA gdbt ,sizePop=44 ,maxIter=10
+['spark.executor.cores', 'spark.scheduler.revive.interval']
+best_x : [  2. 548.]
+best_y : [169.97366]
+generation_best 
+
+{'spark.executor.cores': 2.0, 'spark.scheduler.revive.interval': 548.0, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 3.6640117031111137, 'spark.scheduler.revive.interval': 940.7618840904959, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 1.9602117634845089, 'spark.scheduler.revive.interval': 869.1253942436728, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 4.0, 'spark.scheduler.revive.interval': 839.5476594365518, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 2.814377466450465, 'spark.scheduler.revive.interval': 682.3182876030446, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 3.642278249708735, 'spark.scheduler.revive.interval': 662.0435144320055, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 1.0, 'spark.scheduler.revive.interval': 998.0504943631715, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 2.425085024397274, 'spark.scheduler.revive.interval': 1000.0, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 3.6540651356098675, 'spark.scheduler.revive.interval': 845.2112517481744, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 3.872848877556642, 'spark.scheduler.revive.interval': 640.2731435725065, 'runtime': 169.97366000000008}
+
+binary GA gdbt ,sizePop=44 ,maxIter=10
+['spark.executor.cores', 'spark.scheduler.revive.interval']
+best_x : [  2. 548.]
+best_y : [169.97366]
+generation_best 
+
+{'spark.executor.cores': 2.0, 'spark.scheduler.revive.interval': 548.0, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 1.0, 'spark.scheduler.revive.interval': 558.5580746602191, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 1.0, 'spark.scheduler.revive.interval': 578.9034759300482, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 3.527035742792523, 'spark.scheduler.revive.interval': 736.370179345795, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 3.568454133681027, 'spark.scheduler.revive.interval': 538.8584178357877, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 3.5099045720068243, 'spark.scheduler.revive.interval': 520.7900532858696, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 2.071927450993506, 'spark.scheduler.revive.interval': 580.6879260763835, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 2.5935511521108454, 'spark.scheduler.revive.interval': 924.2237189433804, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 2.6596942020515026, 'spark.scheduler.revive.interval': 747.8750913465876, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 3.8937924285395793, 'spark.scheduler.revive.interval': 502.05111824332437, 'runtime': 169.97366000000008}
+
+binary GA gdbt ,sizePop=44 ,maxIter=20
+['spark.executor.cores', 'spark.scheduler.revive.interval']
+best_x : [  2. 548.]
+best_y : [169.97366]
+generation_best 
+
+{'spark.executor.cores': 2.0, 'spark.scheduler.revive.interval': 548.0, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 1.3425664898973628, 'spark.scheduler.revive.interval': 500.0, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 2.597684620475116, 'spark.scheduler.revive.interval': 500.0, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 1.7510627362364066, 'spark.scheduler.revive.interval': 972.2119091078073, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 4.0, 'spark.scheduler.revive.interval': 551.1703022093693, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 2.6397763785417268, 'spark.scheduler.revive.interval': 537.9018625054805, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 1.0, 'spark.scheduler.revive.interval': 776.830017821819, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 1.6164952850175307, 'spark.scheduler.revive.interval': 879.1184277793316, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 1.697214728965616, 'spark.scheduler.revive.interval': 960.5896719489363, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 4.0, 'spark.scheduler.revive.interval': 505.3171150575754, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 4.0, 'spark.scheduler.revive.interval': 783.9444872470528, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 1.0, 'spark.scheduler.revive.interval': 671.8369930366647, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 4.0, 'spark.scheduler.revive.interval': 809.3528803221614, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 2.35716962798788, 'spark.scheduler.revive.interval': 520.9122295472603, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 2.5067693717218384, 'spark.scheduler.revive.interval': 512.4793102345241, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 1.3708502561225118, 'spark.scheduler.revive.interval': 597.4577809055661, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 3.7943207954583995, 'spark.scheduler.revive.interval': 785.2663817284908, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 2.718265949286122, 'spark.scheduler.revive.interval': 624.063691756367, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 1.0, 'spark.scheduler.revive.interval': 598.5188667742542, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 3.6820471119745335, 'spark.scheduler.revive.interval': 501.68314017340776, 'runtime': 169.97366000000008}
+
+binary GA gdbt ,sizePop=22 ,maxIter=20
+['spark.executor.cores', 'spark.scheduler.revive.interval']
+best_x : [  1. 744.]
+best_y : [169.97366]
+generation_best 
+
+{'spark.executor.cores': 1.0, 'spark.scheduler.revive.interval': 744.0, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 1.494087212449647, 'spark.scheduler.revive.interval': 507.0794784188371, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 3.9729458161683437, 'spark.scheduler.revive.interval': 1000.0, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 1.0, 'spark.scheduler.revive.interval': 613.0490420832763, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 3.2621780382011787, 'spark.scheduler.revive.interval': 508.1638721323544, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 1.7512120805186568, 'spark.scheduler.revive.interval': 503.15502405242626, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 2.9417089671739927, 'spark.scheduler.revive.interval': 529.182250198627, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 3.8971170549900376, 'spark.scheduler.revive.interval': 993.6184965944421, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 3.6308202422403792, 'spark.scheduler.revive.interval': 898.1008925212493, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 3.3445526582023772, 'spark.scheduler.revive.interval': 560.2546733372759, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 1.0, 'spark.scheduler.revive.interval': 927.2006486012912, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 3.8184790464754514, 'spark.scheduler.revive.interval': 551.4088389221694, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 3.4558359639673064, 'spark.scheduler.revive.interval': 807.082871778393, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 3.429411950896781, 'spark.scheduler.revive.interval': 921.5058563590824, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 4.0, 'spark.scheduler.revive.interval': 957.0446342670898, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 2.5644201134030116, 'spark.scheduler.revive.interval': 788.2440886085424, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 2.2190501856098233, 'spark.scheduler.revive.interval': 536.2078332983048, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 1.9303840518545174, 'spark.scheduler.revive.interval': 616.5140795150776, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 1.0, 'spark.scheduler.revive.interval': 500.0, 'runtime': 169.97366000000008}
+{'spark.executor.cores': 3.0235996625374595, 'spark.scheduler.revive.interval': 682.1215877865471, 'runtime': 169.97366000000008}
+
+binary GA xgb ,sizePop=22 ,maxIter=10
+['spark.executor.cores', 'spark.executor.instances', 'spark.scheduler.revive.interval', 'spark.executor.memoryOverhead']
+best_x : [  3.5475269    6.         682.58829817 674.23729631]
+best_y : [176.27263]
+generation_best 
+
+{'spark.executor.cores': 3.0, 'spark.executor.instances': 6.0, 'spark.scheduler.revive.interval': 597.0, 'spark.executor.memoryOverhead': 674.0, 'runtime': 183.17903}
+{'spark.executor.cores': 3.5475268973918572, 'spark.executor.instances': 6.0, 'spark.scheduler.revive.interval': 682.5882981721068, 'spark.executor.memoryOverhead': 674.2372963078242, 'runtime': 176.27263}
+{'spark.executor.cores': 3.9676113108351507, 'spark.executor.instances': 6.020583450759981, 'spark.scheduler.revive.interval': 804.9357176985775, 'spark.executor.memoryOverhead': 671.795020918116, 'runtime': 176.27289}
+{'spark.executor.cores': 3.8701509399963063, 'spark.executor.instances': 5.919120048883409, 'spark.scheduler.revive.interval': 942.5707765110717, 'spark.executor.memoryOverhead': 668.0510215544448, 'runtime': 176.27289}
+{'spark.executor.cores': 3.9979698897002898, 'spark.executor.instances': 6.256260839574958, 'spark.scheduler.revive.interval': 811.221547821841, 'spark.executor.memoryOverhead': 667.951236217418, 'runtime': 176.27289}
+{'spark.executor.cores': 3.910470475117285, 'spark.executor.instances': 5.811366690749894, 'spark.scheduler.revive.interval': 977.8183260107714, 'spark.executor.memoryOverhead': 668.0383351039654, 'runtime': 176.27289}
+{'spark.executor.cores': 3.998884240099234, 'spark.executor.instances': 6.9483622583642415, 'spark.scheduler.revive.interval': 850.2134519722092, 'spark.executor.memoryOverhead': 672.1310459720071, 'runtime': 176.27289}
+{'spark.executor.cores': 3.615053460744753, 'spark.executor.instances': 4.0, 'spark.scheduler.revive.interval': 939.175116287203, 'spark.executor.memoryOverhead': 668.0197324356741, 'runtime': 176.27289}
+{'spark.executor.cores': 3.9938833635217623, 'spark.executor.instances': 6.2568280039332445, 'spark.scheduler.revive.interval': 932.8433694758901, 'spark.executor.memoryOverhead': 668.533150143935, 'runtime': 176.27289}
+{'spark.executor.cores': 3.9953223735024848, 'spark.executor.instances': 4.0, 'spark.scheduler.revive.interval': 783.7336779392533, 'spark.executor.memoryOverhead': 668.8964024985826, 'runtime': 176.27289}
+
+binary GA ada ,sizePop=22 ,maxIter=10
+['spark.scheduler.revive.interval', 'spark.executor.cores']
+best_x : [560.57393236   3.87770398]
+best_y : [180.737]
+generation_best 
+
+{'spark.scheduler.revive.interval': 673.0, 'spark.executor.cores': 4.0, 'runtime': 187.5896111111111}
+{'spark.scheduler.revive.interval': 560.573932359848, 'spark.executor.cores': 3.8777039786652754, 'runtime': 180.737}
+{'spark.scheduler.revive.interval': 566.7769086205191, 'spark.executor.cores': 3.924219737746758, 'runtime': 180.737}
+{'spark.scheduler.revive.interval': 568.4697360007613, 'spark.executor.cores': 4.0, 'runtime': 180.737}
+{'spark.scheduler.revive.interval': 532.2202846780065, 'spark.executor.cores': 3.972114447184853, 'runtime': 180.737}
+{'spark.scheduler.revive.interval': 544.403177391656, 'spark.executor.cores': 3.9584624714431422, 'runtime': 180.737}
+{'spark.scheduler.revive.interval': 562.6937800580346, 'spark.executor.cores': 3.999716634593769, 'runtime': 180.737}
+{'spark.scheduler.revive.interval': 568.5408304200986, 'spark.executor.cores': 3.5118904564139193, 'runtime': 180.737}
+{'spark.scheduler.revive.interval': 541.70867636359, 'spark.executor.cores': 3.973893090181854, 'runtime': 180.737}
+{'spark.scheduler.revive.interval': 532.3891298231339, 'spark.executor.cores': 4.0, 'runtime': 180.737}
+
+binary GA rf ,sizePop=22 ,maxIter=10
+['spark.executor.cores', 'spark.scheduler.revive.interval']
+best_x : [  2. 548.]
+best_y : [171.29599]
+generation_best 
+
+{'spark.executor.cores': 2.0, 'spark.scheduler.revive.interval': 548.0, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 3.5518032601193985, 'spark.scheduler.revive.interval': 1000.0, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 1.676570424121649, 'spark.scheduler.revive.interval': 500.0, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 1.599881608541178, 'spark.scheduler.revive.interval': 1000.0, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 1.8874082603228912, 'spark.scheduler.revive.interval': 999.6638327402779, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 2.1098166323318575, 'spark.scheduler.revive.interval': 957.6297001359713, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 1.7085194121525455, 'spark.scheduler.revive.interval': 974.5538231236585, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 2.827328616936547, 'spark.scheduler.revive.interval': 506.06098878457834, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 1.0852082226331643, 'spark.scheduler.revive.interval': 505.72284386351765, 'runtime': 171.29599000000005}
+{'spark.executor.cores': 3.9450036523322596, 'spark.scheduler.revive.interval': 957.9745210066494, 'runtime': 171.29599000000005}

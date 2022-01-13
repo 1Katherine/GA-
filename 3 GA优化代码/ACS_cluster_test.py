@@ -150,7 +150,7 @@ if __name__ == '__main__':
     print('best_x : ' + str(best_x), file = logfile)
     print('best_y : ' + str(best_y), file = logfile)
 
-    # %% Plot the result
+    # %% Plot the binary_result
     import pandas as pd
     import matplotlib.pyplot as plt
 

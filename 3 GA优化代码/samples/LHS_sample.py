@@ -62,7 +62,7 @@ class LHSample():
             return None
 
         #   sample * (upper_bound - lower_bound) + lower_bound
-        # multiply数组和矩阵对应位置相乘：result = 30*2, (upper_bounds - lower_bounds) = 1*2扩展成30*2 ,对应位置相乘 返回30 * 2矩阵
+        # multiply数组和矩阵对应位置相乘：binary_result = 30*2, (upper_bounds - lower_bounds) = 1*2扩展成30*2 ,对应位置相乘 返回30 * 2矩阵
         # add矩阵相加
         # print()
         np.add(np.multiply(result,
