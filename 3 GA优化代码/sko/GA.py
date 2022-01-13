@@ -217,7 +217,13 @@ class GA(GeneticAlgorithmBase):
         # self.Chrom = self.Chrom.astype(np.int32)
 
 
-        # self.initsamples = self.ganrs_samples()
+        # 针对初始样本越界情况，往往发生在范围表中的上下界与样本实际值不符
+        for row, sam in enumerate(self.initsamples):
+            for dim in range(self.n_dim):
+                if sam[dim] < self.lb[dim]:
+                    raise OverflowError('错误发生在第'+ str(row + 1) +'个样本的第'+ str(dim + 1) +'个维度，变量值'+ str(sam[dim]) +'超出下界'+ str(self.lb[dim]) +'！请检查范围表！')
+                if sam[dim] > self.ub[dim]:
+                    raise OverflowError('错误发生在第'+ str(row + 1) +'个样本的第'+ str(dim + 1) +'个维度，变量值'+ str(sam[dim]) +'超出上界'+ str(self.ub[dim]) +'！请检查范围表！')
         Chrom_sample = self.numTo2x(self.initsamples)
         self.Chrom = Chrom_sample.astype(np.int32)
         # ------------新增代码 end--------------
@@ -470,7 +476,12 @@ class RCGA(GeneticAlgorithmBase):
         # rs_Chrom = np.random.random([rs_sizepop, self.n_dim])
         # # 垂直组合两个矩阵
         # self.Chrom = np.vstack((rs_Chrom, sample_Chrom))
-
+        for row, sam in enumerate(self.initsamples):
+            for dim in range(self.n_dim):
+                if sam[dim] < self.lb[dim]:
+                    raise OverflowError('错误发生在第'+ str(row + 1) +'个样本的第'+ str(dim + 1) +'个维度，变量值'+ str(sam[dim]) +'超出下界'+ str(self.lb[dim]) +'！请检查范围表！')
+                if sam[dim] > self.ub[dim]:
+                    raise OverflowError('错误发生在第'+ str(row + 1) +'个样本的第'+ str(dim + 1) +'个维度，变量值'+ str(sam[dim]) +'超出上界'+ str(self.ub[dim]) +'！请检查范围表！')
         self.Chrom = self.reversechrom2x(self.initsamples)
         return self.Chrom
 

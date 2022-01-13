@@ -99,7 +99,7 @@ def get_ganrs_samples(kind):
 # --------------------- 生成 gan-rs 初始种群 end -------------------
 
 if __name__ == '__main__':
-    name = 'xgb'
+    name = 'rf'
     # 重要参数
     vital_params_path = './files44/' + name + "/selected_parameters.txt"
     # 维护的参数-范围表

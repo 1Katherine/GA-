@@ -68,21 +68,6 @@ def black_box_function(params):
     runtime = model.predict(np.matrix([params]))[0]
     return runtime
 
-# # 获取初始样本
-# def ganrs_samples():
-#     # 初始样本
-#     import pandas as pd
-#     initpoint_path = './wordcount-100G-GAN.csv'
-#     initsamples = pd.read_csv(initpoint_path)
-#     initsamples = initsamples[vital_params_list].to_numpy()
-#     for row, sam in enumerate(initsamples):
-#         for dim in range(nDim):
-#             if precisions[dim] == 1.0:
-#                 sam[dim] = round(sam[dim])
-#             if precisions[dim] == 0.01:
-#                 sam[dim] = round(sam[dim],2)
-#     return initsamples
-
 # --------------------- 生成 gan-rs 初始种群 start -------------------
 initpoint_path = './wordcount-100G-GAN.csv'
 initsamples_df = pd.read_csv(initpoint_path)
