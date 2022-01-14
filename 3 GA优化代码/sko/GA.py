@@ -51,10 +51,6 @@ class GeneticAlgorithmBase(SkoBase, metaclass=ABCMeta):
     def chrom2x(self, Chrom):
         pass
 
-    @abstractmethod
-    def mychrom2x(self, Chrom):
-        pass
-
     # 根据X 和 func 返回性能和y的值
     def x2y(self):
         print('-------------------- 开始 x2y(self) ----------------------', file = logfile)
@@ -90,8 +86,7 @@ class GeneticAlgorithmBase(SkoBase, metaclass=ABCMeta):
     def run(self, max_iter=None):
         self.max_iter = max_iter or self.max_iter
         for i in range(self.max_iter):
-            # self.X = self.chrom2x(self.Chrom) # 二进制种群对应的实数值个体
-            self.X = self.mychrom2x(self.Chrom)
+            self.X = self.chrom2x(self.Chrom) # 二进制种群对应的实数值个体
             self.Y = self.x2y()
 
             self.ranking()
@@ -152,6 +147,237 @@ class GA(GeneticAlgorithmBase):
     https://github.com/guofei9987/scikit-opt/blob/master/examples/demo_ga.py
     """
 
+    def __init__(self, func, n_dim,
+                 size_pop=50, max_iter=200,
+                 prob_mut=0.001,
+                 lb=-1, ub=1,
+                 constraint_eq=tuple(), constraint_ueq=tuple(),
+                 precision=1e-7):
+        super().__init__(func, n_dim, size_pop, max_iter, prob_mut, constraint_eq, constraint_ueq)
+
+        self.lb, self.ub = np.array(lb) * np.ones(self.n_dim), np.array(ub) * np.ones(self.n_dim)
+
+        self.precision = np.array(precision) * np.ones(self.n_dim)  # works when precision is int, float, list or array
+
+        # Lind is the num of genes of every variable of func（segments）
+
+        Lind_raw = np.log2((self.ub - self.lb) / self.precision + 1)
+
+        self.Lind = np.ceil(Lind_raw).astype(int)
+
+        # if precision is integer:
+        # if Lind_raw is integer, which means the number of all possible value is 2**n, no need to modify
+        # if Lind_raw is decimal, we need ub_extend to make the number equal to 2**n,
+
+        self.int_mode_ = (self.precision % 1 == 0) & (Lind_raw % 1 != 0)
+
+        self.int_mode = np.any(self.int_mode_)
+
+        if self.int_mode:
+            self.ub_extend = np.where(self.int_mode_
+                                      , self.lb + (np.exp2(self.Lind) - 1) * self.precision
+                                      , self.ub)
+
+        self.len_chrom = sum(self.Lind)
+
+        self.crtbp()
+
+    def crtbp(self):
+        # create the population
+        self.Chrom = np.random.randint(low=0, high=2, size=(self.size_pop, self.len_chrom))
+        return self.Chrom
+
+    def gray2rv(self, gray_code):
+        # Gray Code to real value: one piece of a whole chromosome
+        # input is a 2-dimensional numpy array of 0 and 1.
+        # output is a 1-dimensional numpy array which convert every row of input into a real number.
+        _, len_gray_code = gray_code.shape
+        b = gray_code.cumsum(axis=1) % 2
+        mask = np.logspace(start=1, stop=len_gray_code, base=0.5, num=len_gray_code)
+        return (b * mask).sum(axis=1) / mask.sum()
+
+    def chrom2x(self, Chrom):
+        cumsum_len_segment = self.Lind.cumsum()
+        X = np.zeros(shape=(self.size_pop, self.n_dim))
+        for i, j in enumerate(cumsum_len_segment):
+            if i == 0:
+                Chrom_temp = Chrom[:, :cumsum_len_segment[0]]
+            else:
+                Chrom_temp = Chrom[:, cumsum_len_segment[i - 1]:cumsum_len_segment[i]]
+            X[:, i] = self.gray2rv(Chrom_temp)
+        if self.int_mode:
+            X = self.lb + (self.ub_extend - self.lb) * X
+            X = np.where(X > self.ub, self.ub, X)
+            # the ub may not obey precision, which is ok.
+            # for example, if precision=2, lb=0, ub=5, then x can be 5
+        else:
+            X = self.lb + (self.ub - self.lb) * X
+        return X
+
+    ranking = ranking.ranking
+    selection = selection.selection_tournament_faster
+    crossover = crossover.crossover_2point_bit
+    mutation = mutation.mutation
+
+    def to(self, device):
+        '''
+        use pytorch to get parallel performance
+        '''
+        try:
+            import torch
+            from .operators_gpu import crossover_gpu, mutation_gpu, selection_gpu, ranking_gpu
+        except:
+            print('pytorch is needed')
+            return self
+
+        self.device = device
+        self.Chrom = torch.tensor(self.Chrom, device=device, dtype=torch.int8)
+
+        def chrom2x(self, Chrom):
+            '''
+            We do not intend to make all operators as tensor,
+            because objective function is probably not for pytorch
+            '''
+            Chrom = Chrom.cpu().numpy()
+            cumsum_len_segment = self.Lind.cumsum()
+            X = np.zeros(shape=(self.size_pop, self.n_dim))
+            for i, j in enumerate(cumsum_len_segment):
+                if i == 0:
+                    Chrom_temp = Chrom[:, :cumsum_len_segment[0]]
+                else:
+                    Chrom_temp = Chrom[:, cumsum_len_segment[i - 1]:cumsum_len_segment[i]]
+                X[:, i] = self.gray2rv(Chrom_temp)
+
+            if self.int_mode:
+                X = self.lb + (self.ub_extend - self.lb) * X
+                X = np.where(X > self.ub, self.ub, X)
+            else:
+                X = self.lb + (self.ub - self.lb) * X
+            return X
+
+        self.register('mutation', mutation_gpu.mutation). \
+            register('crossover', crossover_gpu.crossover_2point_bit). \
+            register('chrom2x', chrom2x)
+
+        return self
+
+
+class RCGA(GeneticAlgorithmBase):
+    """real-coding genetic algorithm
+    Parameters
+    ----------------
+    func : function
+        The func you want to do optimal
+    n_dim : int
+        number of variables of func
+    size_pop : int
+        Size of population
+    max_iter : int
+        Max of iter
+    prob_mut : float between 0 and 1
+        Probability of mutation
+    prob_cros : float between 0 and 1
+        Probability of crossover
+    lb : array_like
+        The lower bound of every variables of func
+    ub : array_like
+        The upper bound of every variables of func
+    """
+
+    def __init__(self, func, n_dim,
+                 size_pop=50, max_iter=200,
+                 prob_mut=0.001,
+                 prob_cros=0.9,
+                 lb=-1, ub=1,
+                 ):
+        super().__init__(func, n_dim, size_pop, max_iter, prob_mut)
+        self.lb, self.ub = np.array(lb) * np.ones(self.n_dim), np.array(ub) * np.ones(self.n_dim)
+        self.prob_cros = prob_cros
+        self.crtbp()
+
+    def crtbp(self):
+        # create the population, random floating point numbers of 0 ~ 1
+        self.Chrom = np.random.random([self.size_pop, self.n_dim])
+        return self.Chrom
+
+    def chrom2x(self, Chrom):
+        X = self.lb + (self.ub - self.lb) * self.Chrom
+        return X
+
+    def crossover_SBX(self):
+        '''
+        simulated binary crossover
+        :param self:
+        :return self.Chrom:
+        '''
+        Chrom, size_pop, len_chrom, Y = self.Chrom, self.size_pop, len(self.Chrom[0]), self.FitV
+        for i in range(0, size_pop, 2):
+
+            if np.random.random() > self.prob_cros:
+                continue
+            for j in range(len_chrom):
+
+                ylow = 0
+                yup = 1
+                y1 = Chrom[i][j]
+                y2 = Chrom[i + 1][j]
+                r = np.random.random()
+                if r <= 0.5:
+                    betaq = (2 * r) ** (1.0 / (1 + 1.0))
+                else:
+                    betaq = (0.5 / (1.0 - r)) ** (1.0 / (1 + 1.0))
+
+                child1 = 0.5 * ((1 + betaq) * y1 + (1 - betaq) * y2)
+                child2 = 0.5 * ((1 - betaq) * y1 + (1 + betaq) * y2)
+
+                child1 = min(max(child1, ylow), yup)
+                child2 = min(max(child2, ylow), yup)
+
+                self.Chrom[i][j] = child1
+                self.Chrom[i + 1][j] = child2
+        return self.Chrom
+
+    def mutation(self):
+        '''
+        Routine for real polynomial mutation of an individual
+        mutation of 0/1 type chromosome
+        :param self:
+        :return:
+        '''
+        #
+        size_pop, n_dim, Chrom = self.size_pop, self.n_dim, self.Chrom
+        for i in range(size_pop):
+            for j in range(n_dim):
+                r = np.random.random()
+                if r <= self.prob_mut:
+                    y = Chrom[i][j]
+                    ylow = 0
+                    yup = 1
+                    delta1 = 1.0 * (y - ylow) / (yup - ylow)
+                    delta2 = 1.0 * (yup - y) / (yup - ylow)
+                    r = np.random.random()
+                    mut_pow = 1.0 / (1 + 1.0)
+                    if r <= 0.5:
+                        xy = 1.0 - delta1
+                        val = 2.0 * r + (1.0 - 2.0 * r) * (xy ** (1 + 1.0))
+                        deltaq = val ** mut_pow - 1.0
+                    else:
+                        xy = 1.0 - delta2
+                        val = 2.0 * (1.0 - r) + 2.0 * (r - 0.5) * (xy ** (1 + 1.0))
+                        deltaq = 1.0 - val ** mut_pow
+                    y = y + deltaq * (yup - ylow)
+                    y = min(yup, max(y, ylow))
+                    self.Chrom[i][j] = y
+        return self.Chrom
+
+    ranking = ranking.ranking
+    selection = selection.selection_tournament_faster
+    crossover = crossover_SBX
+    mutation = mutation
+
+
+
+class myGA(GeneticAlgorithmBase):
     def __init__(self, initsamples, func, n_dim,
                  size_pop=50, max_iter=200,
                  prob_mut=0.001,
@@ -164,25 +390,14 @@ class GA(GeneticAlgorithmBase):
         self.lhs_sizepop = self.size_pop - self.rs_sizepop # 用于其他采样方式生成的个体
         # n_dim = 搜索参数的个数（比如有10个需要优化的重要参数 n_dim = 10）
         self.lb, self.ub = np.array(lb) * np.ones(self.n_dim), np.array(ub) * np.ones(self.n_dim)
-        # 返回一个指定形状和数据类型的新数组，并且数组中的值都为1   precision = [0.01, 1.0, 1.0, 1.0, 0.01, 1.0, 1.0, 1.0, 1.0, 1.0]
         self.precision = np.array(precision) * np.ones(self.n_dim)  # works when precision is int, float, list or array
-        # Lind is the num of genes of every variable of func（segments）
-        # Lind是函数（segments）中每个变量的基因数量。
-        # Lind_raw = [ 5.357552    1.5849625   2.32192809  2.32192809  5.357552    5.04439412    30.          8.23361968  5.61470984  8.94836723]
         Lind_raw = np.log2((self.ub - self.lb) / self.precision + 1)
-        # ceiling向上取整，转换数组的数据类型为int
-        # Lind = [ 6  2  3  3  6  6 31  9  6  9]
         self.Lind = np.ceil(Lind_raw).astype(int)
 
-        # Lind_raw为整数，则self.ub - self.lb) / self.precision + 1必须为2的倍数
-        # int_mode_ = [False  True  True  True False  True  True  True  True  True]
-        self.int_mode_ = (self.precision % 1 == 0) & (Lind_raw % 1 != 0) # ndarray(10,) = true/false, 精度不为1，self.int_mode_一定为false
-        # 只要precision为整数就是true，或者精度为小数但Lind_raw为整数就是true
-        self.int_mode = np.any(self.int_mode_) # 有一个参数变量的（精度为1 && 基因数为偶数）则返回true
-        # int_mode_为1，我们需要ub_extend来使这个数字等于2**n
+
+        self.int_mode_ = (self.precision % 1 == 0) & (Lind_raw % 1 != 0)
+        self.int_mode = np.any(self.int_mode_)
         if self.int_mode:
-            # 如果 int_mode_ = true，精度为1，更新上界 ub_extend = self.lb + (np.exp2(self.Lind) - 1) * self.precision
-            # 如果 int_mode_ = false，精度不为1，不更新上界 ub_extend = self.ub
             self.ub_extend = np.where(self.int_mode_
                                       , self.lb + (np.exp2(self.Lind) - 1) * self.precision
                                       , self.ub) # ub_extend = ndarray(10,)
@@ -281,23 +496,6 @@ class GA(GeneticAlgorithmBase):
         return np.array(list(mycode))
     # ------------新增代码 end--------------
 
-    '''
-        根据该变量对应的基因片段的二进制值，计算该二进制值对应的范围内的实数值（二进制->实数）
-    '''
-    def gray2rv(self, gray_code):
-        print('----------------------- 开始 gray2rv(self, gray_code) ----------------------', file = logfile)
-        # len_gray_code 为该变量对应的染色体数量
-        _, len_gray_code = gray_code.shape
-        # 按照列累加(第一列 = 第一列 ， 第二列 = 第一列+第二列 ， 第三列 = 第一列+第二列+第三列....)，除以2取余 = 0 / 1
-        b = gray_code.cumsum(axis=1) % 2
-        print('b = ' + str(b), file = logfile)
-        # np.logspace 对数等比数列 start=开始值，stop=结束值，num=元素个数，base=指定对数的底, endpoint=是否包含结束值
-        # mask = 0.5**n (n = 1 .... len_gray_code) mask = [0.5      0.25     0.125    0.0625   0.03125  0.015625]
-        mask = np.logspace(start=1, stop=len_gray_code, base=0.5, num=len_gray_code)
-        # 返回数组，个数为30（种群个数）
-        res = (b * mask).sum(axis=1) / mask.sum()
-        return res
-
     # ------------新增代码 start--------------
     def getGrayValue(self, graycode, code_dim):
         X = []
@@ -312,8 +510,7 @@ class GA(GeneticAlgorithmBase):
             X.append(int(code_str , 2) * self.realPrecision[code_dim] + self.lb[code_dim])
         return np.array(X)
 
-    # 我的：二进制种群计算实数值
-    def mychrom2x(self, Chrom):
+    def chrom2x(self, Chrom):
         cumsum_len_segment = self.bitsPower.cumsum()
         X = np.zeros(shape=(self.size_pop, self.n_dim))
         # i = 0\1\2\3...9（变量个数）
@@ -335,112 +532,17 @@ class GA(GeneticAlgorithmBase):
         # print('二进制解码成十进制实数,X =  \n' + str(X[self.lhs_sizepop:,:]))
 
         return X
-        # print('X = ' + str(X))
     # ------------新增代码 end--------------
-
-    def chrom2x(self, Chrom):
-        print('----------------------- 开始 chrom2x(self, Chrom) -------------------------', file = logfile)
-        # Lind = [6  2  3  3  6  6 31  9  6  9] 共有10个变量 cumsum计算一个数组各行的累加值
-        cumsum_len_segment = self.Lind.cumsum() # cumsum_len_segment = ndarray(10,)表示每个参数变量在基因矩阵中的结束列下标
-        # cumsum_len_segment = [ 6  8 11 14 20 26 57 66 72 81]
-        # X为一次迭代得到的size_pop个个体，矩阵行为size_pop，列为变量个数
-        X = np.zeros(shape=(self.size_pop, self.n_dim))
-        # i = 0\1\2\3...9（变量个数） j = 6\8\11\14\....
-        # 对每一个变量的片段染色体计算 gray2rv （一个变量对应 X 的多个列，有的对应2列 有的对应8列）
-        for i, j in enumerate(cumsum_len_segment):
-            if i == 0:
-                # 取初始种群 Chrom 的前6列 （第一个变量）
-                Chrom_temp = Chrom[:, :cumsum_len_segment[0]]
-            else:
-                # 取 Chorm 的第 cumsum_len_segment[i - 1] 到第 cumsum_len_segment[i]列（其他变量列）
-                # 取每一个变量对应的染色体子片段
-                Chrom_temp = Chrom[:, cumsum_len_segment[i - 1]:cumsum_len_segment[i]]
-            # 将每一个变量的片段染色体的 0-1 之间的实数值放入返回值X的对应列中
-            X[:, i] = self.gray2rv(Chrom_temp)
-
-        # 如果int_mode = 1
-        if self.int_mode:
-            X = self.lb + (self.ub_extend - self.lb) * X
-            X = np.where(X > self.ub, self.ub, X)
-            # the ub may not obey precision, which is ok.
-            # for example, if precision=2, lb=0, ub=5, then x can be 5
-        # 如果int_mode = 0, 精度不为整数
-        else:
-            X = self.lb + (self.ub - self.lb) * X
-        return X
 
     ranking = ranking.ranking
     selection = selection.selection_tournament_faster
     crossover = crossover.crossover_2point_bit
     mutation = mutation.mutation
 
-    def to(self, device):
-        '''
-        use pytorch to get parallel performance
-        '''
-        try:
-            import torch
-            from .operators_gpu import crossover_gpu, mutation_gpu, selection_gpu, ranking_gpu
-        except:
-            print('pytorch is needed')
-            return self
-
-        self.device = device
-        self.Chrom = torch.tensor(self.Chrom, device=device, dtype=torch.int8)
-
-        def chrom2x(self, Chrom):
-            '''
-            We do not intend to make all operators as tensor,
-            because objective function is probably not for pytorch
-            '''
-            Chrom = Chrom.cpu().numpy()
-            cumsum_len_segment = self.Lind.cumsum()
-            X = np.zeros(shape=(self.size_pop, self.n_dim))
-            for i, j in enumerate(cumsum_len_segment):
-                if i == 0:
-                    Chrom_temp = Chrom[:, :cumsum_len_segment[0]]
-                else:
-                    Chrom_temp = Chrom[:, cumsum_len_segment[i - 1]:cumsum_len_segment[i]]
-                X[:, i] = self.gray2rv(Chrom_temp)
-
-            if self.int_mode:
-                X = self.lb + (self.ub_extend - self.lb) * X
-                X = np.where(X > self.ub, self.ub, X)
-            else:
-                X = self.lb + (self.ub - self.lb) * X
-            return X
-
-        self.register('mutation', mutation_gpu.mutation). \
-            register('crossover', crossover_gpu.crossover_2point_bit). \
-            register('chrom2x', chrom2x)
-
-        return self
-
 '''
     实数编码GA
 '''
-class RCGA(GeneticAlgorithmBase):
-    """real-coding genetic algorithm
-
-    Parameters
-    ----------------
-    func : function
-        The func you want to do optimal
-    n_dim : int
-        number of variables of func
-    size_pop : int
-        Size of population
-    max_iter : int
-        Max of iter
-    prob_mut : float between 0 and 1
-        Probability of mutation
-    prob_cros : float between 0 and 1
-        Probability of crossover
-    lb : array_like
-        The lower bound of every variables of func
-    ub : array_like
-        The upper bound of every variables of func
-    """
+class myRCGA(GeneticAlgorithmBase):
     def __init__(self, initsamples, func, n_dim,
                  size_pop=50, max_iter=200,
                  prob_mut=0.001,
@@ -488,11 +590,6 @@ class RCGA(GeneticAlgorithmBase):
 
     # 0-1之间的实数编码计算样本在范围内的真实值
     def chrom2x(self,Chrom):
-        X = self.lb + (self.ub - self.lb) * self.Chrom
-        return X
-
-    # 0-1之间的实数编码计算样本在范围内的真实值
-    def mychrom2x(self,Chrom):
         X = self.lb + (self.ub - self.lb) * self.Chrom
         return X
 

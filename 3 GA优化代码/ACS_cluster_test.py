@@ -140,9 +140,9 @@ if __name__ == '__main__':
     sizePop = 30  # 种群数量
     maxIter = 10  # 迭代次数
     # probMut = 0.01  # 变异概率
-    probMut = np.array([0.01, 0.1, 0.02, 0.03, 0.05, 0.06, 0.07, 0.8, 0.03, 0.1])
-    ga = GA(func=fitFunc, n_dim=nDim, size_pop=sizePop, max_iter=maxIter, prob_mut=probMut, lb=confLb, ub=confUb,
-            precision=precisions)
+    # probMut = 0.01
+    probMut = [0.01, 0.02, 0.05, 0.08, 0.2, 0.01, 0.02, 0.05, 0.08, 0.2]
+    ga = GA(func=fitFunc, n_dim=nDim, size_pop=sizePop, max_iter=maxIter, prob_mut=probMut, lb=confLb, ub=confUb, precision=precisions)
     # ga = RCGA(func=fitFunc, n_dim=nDim, size_pop=sizePop, max_iter=maxIter, prob_mut=probMut, lb=confLb, ub=confUb)
     best_x, best_y = ga.run()
     endTime = datetime.datetime.now()
@@ -157,6 +157,7 @@ if __name__ == '__main__':
     Y_history = pd.DataFrame(ga.all_history_Y)
     fig, ax = plt.subplots(2, 1)
     ax[0].plot(Y_history.index, Y_history.values, '.', color='red')
+    ax[0].set_title('original GA ' + name)
     Y_history.min(axis=1).cummin().plot(kind='line')
     plt.show()
 

@@ -10,25 +10,11 @@ import numpy as np
 import os
 import sys
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
-from sko.GA import GA,RCGA
+from sko.GA import myGA
 
 
 
 # 主机上运行的代码
-
-
-'''
-    根据名称构建模型
-'''
-def build_model(name):
-    if name.lower() == "lgb":
-        model = lgb.LGBMRegressor()
-    elif name.lower() == "gdbt":
-        model = GradientBoostingRegressor()
-    else:
-        model = RandomForestRegressor()
-    return model
-
 
 '''
     不重新建模，使用已经构建好的模型
@@ -38,23 +24,23 @@ def build_training_model(name):
     if name.lower() == "lgb":
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=UserWarning)
-            model = joblib.load('./files44/lgb/lgb.pkl')
-    elif name.lower() == "gdbt":
+            model = joblib.load(modelfile + 'lgb/lgb.pkl')
+    elif name.lower() == "gbdt":
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=UserWarning)
-            model = joblib.load('./files44/gdbt/gdbt.pkl')
+            model = joblib.load(modelfile + 'gbdt/gbdt.pkl')
     elif name.lower() == "rf":
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=UserWarning)
-            model = joblib.load('./files44/rf/rf.pkl')
+            model = joblib.load(modelfile + 'rf/rf.pkl')
     elif name.lower() == 'xgb':
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=UserWarning)
-            model = joblib.load('./files44/xgb/xgb.pkl')
+            model = joblib.load(modelfile + 'xgb/xgb.pkl')
     elif name.lower() == 'ada':
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=UserWarning)
-            model = joblib.load('./files44/ada/ada.pkl')
+            model = joblib.load(modelfile + 'ada/ada.pkl')
     else:
         raise Exception("[!] There is no option ")
     return model
@@ -91,17 +77,21 @@ def ganrs_samples_even():
 def get_ganrs_samples(kind):
     if kind == 'all':
         samples = ganrs_samples_all()
-    if kind == 'odd':
+    elif kind == 'odd':
         samples = ganrs_samples_odd()
-    if kind == 'even':
+    elif kind == 'even':
         samples = ganrs_samples_even()
+    else:
+        raise Exception("[!] There is no option to get initsample ")
     return samples
 # --------------------- 生成 gan-rs 初始种群 end -------------------
 
 if __name__ == '__main__':
-    name = 'rf'
+    sample_kind = 'all'
+    name = 'xgb'
+    modelfile = './files32/'
     # 重要参数
-    vital_params_path = './files44/' + name + "/selected_parameters.txt"
+    vital_params_path = modelfile + name + "/selected_parameters.txt"
     # 维护的参数-范围表
     conf_range_table = "Spark_conf_range_wordcount.xlsx"
 
@@ -135,7 +125,7 @@ if __name__ == '__main__':
             print(conf, '-----参数没有维护: ', '-----')
     # ------------新增代码 start--------------
     # 重要参数的特征值
-    parameters_features_path = './files44/' + name + "/parameters_features.txt"
+    parameters_features_path = modelfile  + name + "/parameters_features.txt"
     parameters_features_file = []
     parameters_features = []
     vital_params_list = []
@@ -159,19 +149,19 @@ if __name__ == '__main__':
     # 确定其他参数
     fitFunc = black_box_function  # 适应度函数
     nDim = len(vital_params)  # 参数个数
-    sample_kind = 'even'
+
     initsamples = get_ganrs_samples(kind=sample_kind)
     sizePop = len(initsamples)  # 种群数量
     maxIter = 10  # 迭代次数
     # probMut = 0.01  # 变异概率
     probMut = np.array(parameters_features)
 
-    ga = GA(initsamples=initsamples,func=fitFunc,  n_dim=nDim, size_pop=sizePop, max_iter=maxIter, prob_mut=probMut, lb=confLb, ub=confUb,
+    ga = myGA(initsamples=initsamples,func=fitFunc,  n_dim=nDim, size_pop=sizePop, max_iter=maxIter, prob_mut=probMut, lb=confLb, ub=confUb,
             precision=precisions)
     best_x, best_y = ga.run()
     endTime = datetime.datetime.now()
     searchDuration = (endTime - startTime).seconds
-    generation_best_file = open('./binary_result/generation_best.txt', 'a')
+    generation_best_file = open(modelfile + 'result/binary_result/generation_best.txt', 'a')
     print('\nbinary GA ' + name + ' ,sizePop=' + str(sizePop) + ' ,maxIter=' + str(maxIter), file=generation_best_file)
     print(vital_params_list, file=generation_best_file)
     print('best_x : ' + str(best_x), file=generation_best_file)
@@ -184,7 +174,7 @@ if __name__ == '__main__':
         generation_best.append(temp)
         print(str(temp), file=generation_best_file)
     df = pd.DataFrame(generation_best)
-    df.to_csv('./binary_result/generation_best '+ name + ' sizePop=' + str(sizePop) + ' maxIter=' + str(maxIter) + '.csv', index=False)
+    df.to_csv(modelfile + 'result/binary_result/generation_best '+ name + ' sizePop=' + str(sizePop) + ' maxIter=' + str(maxIter) + '.csv', index=False)
 
     # %% Plot the binary_result
     import pandas as pd
@@ -195,7 +185,7 @@ if __name__ == '__main__':
     ax[0].plot(Y_history.index, Y_history.values, '.', color='red')
     ax[0].set_title('binary GA ' + name)
     Y_history.min(axis=1).cummin().plot(kind='line')
-    plt.savefig('./binary_result/pic/RCGA ' + name + ' sizePop=' + str(sizePop) + ' maxIter=' + str(maxIter) + '.png')
+    plt.savefig(modelfile + 'result/binary_result/pic/RCGA ' + name + ' sizePop=' + str(sizePop) + ' maxIter=' + str(maxIter) + '.png')
     plt.show()
 
 
