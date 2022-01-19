@@ -159,7 +159,7 @@ if __name__ == '__main__':
     best_x, best_y = ga.run()
     endTime = datetime.datetime.now()
     searchDuration = (endTime - startTime).seconds
-    generation_best_file = open(modelfile + 'result/RCGA_result/generation_best.txt', 'a')
+    generation_best_file = open(modelfile + 'result/RCGA_result/generation_best_files44.txt', 'a')
     print('\nbinary GA ' + name + ' ,sizePop=' + str(sizePop) + ' ,maxIter=' + str(maxIter), file=generation_best_file)
     print(vital_params_list, file=generation_best_file)
     print('best_x : ' + str(best_x), file=generation_best_file)
