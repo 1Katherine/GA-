@@ -11,8 +11,8 @@ import os
 import sys
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 from sko.GA import myRCGA
-
-
+import warnings
+warnings.filterwarnings("ignore")
 
 # 主机上运行的代码
 
@@ -21,7 +21,6 @@ from sko.GA import myRCGA
     不重新建模，使用已经构建好的模型
 '''
 def build_training_model(name):
-    import warnings
     if name.lower() == "lgb":
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=UserWarning)
@@ -56,7 +55,7 @@ def black_box_function(params):
     return runtime
 
 # --------------------- 生成 gan-rs 初始种群 start -------------------
-initpoint_path = './wordcount-100G-GAN.csv'
+initpoint_path = 'wordcount-100G-GAN-30.csv'
 initsamples_df = pd.read_csv(initpoint_path)
 
 def ganrs_samples_all():
@@ -88,8 +87,8 @@ def get_ganrs_samples(kind):
 
 if __name__ == '__main__':
     sample_kind = 'all'
-    name = 'gbdt'
-    modelfile = './files32/'
+    name = 'xgb'
+    modelfile = './files30/'
     # 重要参数
     vital_params_path = modelfile + name + "/selected_parameters.txt"
     # 维护的参数-范围表
@@ -159,7 +158,7 @@ if __name__ == '__main__':
     best_x, best_y = ga.run()
     endTime = datetime.datetime.now()
     searchDuration = (endTime - startTime).seconds
-    generation_best_file = open(modelfile + 'result/RCGA_result/generation_best_files44.txt', 'a')
+    generation_best_file = open(modelfile + 'result/RCGA_result/generation_best_files.txt', 'a')
     print('\nbinary GA ' + name + ' ,sizePop=' + str(sizePop) + ' ,maxIter=' + str(maxIter), file=generation_best_file)
     print(vital_params_list, file=generation_best_file)
     print('best_x : ' + str(best_x), file=generation_best_file)

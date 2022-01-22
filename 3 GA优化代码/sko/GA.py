@@ -436,8 +436,12 @@ class myGA(GeneticAlgorithmBase):
         for row, sam in enumerate(self.initsamples):
             for dim in range(self.n_dim):
                 if sam[dim] < self.lb[dim]:
+                    print('下界：' + str(self.lb))
+                    print(sam)
                     raise OverflowError('错误发生在第'+ str(row + 1) +'个样本的第'+ str(dim + 1) +'个维度，变量值'+ str(sam[dim]) +'超出下界'+ str(self.lb[dim]) +'！请检查范围表！')
                 if sam[dim] > self.ub[dim]:
+                    print('上界：' + str(self.ub))
+                    print(sam)
                     raise OverflowError('错误发生在第'+ str(row + 1) +'个样本的第'+ str(dim + 1) +'个维度，变量值'+ str(sam[dim]) +'超出上界'+ str(self.ub[dim]) +'！请检查范围表！')
         Chrom_sample = self.numTo2x(self.initsamples)
         self.Chrom = Chrom_sample.astype(np.int32)

@@ -58,7 +58,22 @@ def black_box_function(params):
 
 
 # --------------------- 生成 gan-rs 初始种群 start -------------------
-initpoint_path = './wordcount-100G-GAN.csv'
+'''
+    使用方法：
+        # 取所有样本/奇数行/偶数行 --- 奇偶数行仅针对2个rs后接2个gan样本的情况
+        initsamples = get_ganrs_samples(kind=sample_kind)
+        
+        # 取前headn个数据 ---- 3个rs后接3个gan样本的情况可使用该方法
+        ganrs_group = 6
+        headn = ganrs_group * 2
+        initsamples = get_head_n(n=headn)
+        
+        # 每隔ganrs_interval行取一个数据 ------ 3个rs后接3个gan样本的情况可使用该方法
+        ganrs_group = 6
+        ganrs_interval = ganrs_group // 2
+        initsamples = get_ganrs_intevaln(n = ganrs_interval)
+'''
+initpoint_path = 'wordcount-100G-GAN-30.csv'
 initsamples_df = pd.read_csv(initpoint_path)
 
 def ganrs_samples_all():
@@ -86,12 +101,29 @@ def get_ganrs_samples(kind):
     else:
         raise Exception("[!] There is no option to get initsample ")
     return samples
+
+# 获取dataframe的前n行样本作为初始样本
+def get_head_n(n):
+    initsamples_head = initsamples_df.head(n)
+    initsamples = initsamples_head[vital_params_list].to_numpy()
+    return initsamples
+
+# 每隔n行取一行
+def get_ganrs_intevaln(n):
+    a = []
+    for i in range(0, len(initsamples_df), n):  ##每隔86行取数据
+        a.append(i)
+    print('取出的行号为：' + str(a))
+    sample = initsamples_df.iloc[a]
+    initsamples = sample[vital_params_list].to_numpy()
+    return initsamples
+
 # --------------------- 生成 gan-rs 初始种群 end -------------------
 
-if __name__ == '__main__':
+if  __name__ == '__main__':
     sample_kind = 'all'
-    name = 'xgb'
-    modelfile = './files44/'
+    name = 'ada'
+    modelfile = './files30/'
     # 重要参数
     vital_params_path = modelfile + name + "/selected_parameters.txt"
     # 维护的参数-范围表
@@ -152,7 +184,20 @@ if __name__ == '__main__':
     fitFunc = black_box_function  # 适应度函数
     nDim = len(vital_params)  # 参数个数
 
+    # 选择所有样本
     initsamples = get_ganrs_samples(kind=sample_kind)
+
+    # # 选择前12个样本
+    # ganrs_group = 6
+    # headn = ganrs_group * 2
+    # initsamples = get_head_n(n=headn)
+
+    # # 每隔3个样本选择一个样本（包括第三个样本）
+    # ganrs_group = 6
+    # ganrs_interval = ganrs_group // 2
+    # initsamples = get_ganrs_intevaln(n = ganrs_interval)
+    # print(initsamples)
+
     sizePop = len(initsamples)  # 种群数量
     maxIter = 10  # 迭代次数
     # probMut = 0.01  # 变异概率

@@ -33,7 +33,7 @@ for conf in vital_params['vital_params']:
             parameters_features.append(float(para.split(':')[1]))
 
 # 初始样本
-initpoint_path = './wordcount-100G-GAN.csv'
+initpoint_path = 'wordcount-100G-GAN-44.csv'
 initsamples = pd.read_csv(initpoint_path)
 samples = initsamples[vital_params_list].to_numpy()
 print(samples)
