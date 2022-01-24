@@ -58,9 +58,6 @@ def black_box_function(params):
 
 
 # --------------------- 生成 gan-rs 初始种群 start -------------------
-initpoint_path = 'wordcount-100G-GAN-30.csv'
-initsamples_df = pd.read_csv(initpoint_path)
-
 # 选择所有初始样本
 def ganrs_samples_all():
     # 初始样本
@@ -94,20 +91,26 @@ def get_best_n(n):
 # --------------------- 生成 gan-rs 初始种群 end -------------------
 
 if  __name__ == '__main__':
-    name = 'rf'
-    modelfile = './files30/'
-    # 采样方式有三种（0所有样本或者even/odd，1前ganrs_group*2个样本，2间隔ganrs_group // 2个样本采样，一组样本中只采样1个rs2个gan）
-    sample_type = 1
+    name = 'gbdt'
+    modelfile = './gan_rs_30_gan/30+90/'
+    # 采样方式有三种（0所有样本，1前ganrs_group*2个样本，2间隔ganrs_group // 2个样本采样，一组样本中只采样1个rs2个gan）
+    sample_type = 0
     # 一组rs+gan的样本数
     ganrs_group = 6
     # 选择前headn个样本采样(前两组配置）
     headn = ganrs_group * 2
     # 间隔ganrs_interval个样本采样
     ganrs_interval = ganrs_group // 2
+    # 迭代次数
+    maxIter = 30
     # 重要参数
     vital_params_path = modelfile + name + "/selected_parameters.txt"
     # 维护的参数-范围表
     conf_range_table = "Spark_conf_range_wordcount.xlsx"
+    # 读取初始样本（50%rs+50%gan）
+    initpoint_path = 'wordcount-100G-GAN-30.csv'
+    print('initpoint_path = ' + initpoint_path)
+    initsamples_df = pd.read_csv(initpoint_path)
 
     '''
         读取模型输出的重要参数
@@ -130,8 +133,11 @@ if  __name__ == '__main__':
     confLb = []  # 参数空间上界
     confUb = []  # 参数空间下界
     precisions = []  # 参数精度
+    vital_params_list = []  # 重要参数
     for conf in vital_params['vital_params']:
         if conf in confDict:
+            print(conf + '\t 下界:' + str(confDict[conf]['min']) + '\t 上界:' + str(confDict[conf]['max']) + '\t 精度:' + str(confDict[conf]['pre']))
+            vital_params_list.append(conf)
             confLb.append(confDict[conf]['min'])
             confUb.append(confDict[conf]['max'])
             precisions.append(confDict[conf]['pre'])
@@ -142,19 +148,19 @@ if  __name__ == '__main__':
     parameters_features_path = modelfile  + name + "/parameters_features.txt"
     parameters_features_file = []
     parameters_features = []
-    vital_params_list = []
     for line in open(parameters_features_path, encoding='gb18030'):
         parameters_features_file.append(line.strip())
-    # 取出重要参数
+
+    # 取出重要参数的特征值
     parameters_features_file = parameters_features_file[-len(vital_params):]
-    for conf in vital_params['vital_params']:
+    print('\n重要参数和特征值列表 =  \n' + str(parameters_features_file))
+    for conf in vital_params_list:
         for para in parameters_features_file:
             if conf in para:
-                # 重要参数列表
-                vital_params_list.append(para.split(':')[0])
                 # 重要参数的特征重要值列表
                 parameters_features.append(float(para.split(':')[1]))
-
+    print('\n重要参数列表 = \n' + str(vital_params_list))
+    print('\n重要参数的重要性值 = \n' + str(parameters_features))
     # ------------新增代码 end--------------
     '''
         开始遗传算法
@@ -182,8 +188,11 @@ if  __name__ == '__main__':
     # ------------------ 选择初始样本（3个方法选其一） end -------------
 
     sizePop = len(initsamples)  # 种群数量
-    maxIter = 10  # 迭代次数
     # probMut = 0.01  # 变异概率
+    for i,pf in enumerate(parameters_features):
+        if pf == 0.0:
+            parameters_features[i] = 0.01
+    print('处理后的重要参数的重要性值 = \n' + str(parameters_features))
     probMut = np.array(parameters_features)
 
     ga = myGA(initsamples=initsamples,func=fitFunc,  n_dim=nDim, size_pop=sizePop, max_iter=maxIter, prob_mut=probMut, lb=confLb, ub=confUb,
@@ -191,7 +200,14 @@ if  __name__ == '__main__':
     best_x, best_y = ga.run()
     endTime = datetime.datetime.now()
     searchDuration = (endTime - startTime).seconds
-    generation_best_file = open(modelfile + 'result/binary_result/generation_best_'+ modelfile.split('/')[1] +'.txt', 'a')
+    startDay = str(startTime.strftime( '%Y-%m-%d'))
+    generation_best_pic_directory = modelfile + 'result/binary_result/pic/' + startDay + '/'
+    generation_best_directory = modelfile + 'result/binary_result/result/' + startDay + '/'
+    if not os.path.exists(generation_best_pic_directory):
+        os.makedirs(generation_best_pic_directory)
+    if not os.path.exists(generation_best_directory):
+        os.makedirs(generation_best_directory)
+    generation_best_file = open(generation_best_directory + 'generation_best_' + modelfile.split('/')[1] + '.txt', 'a')
     print('\nbinary GA ' + name + ' ,sizePop=' + str(sizePop) + ' ,maxIter=' + str(maxIter), file=generation_best_file)
     print(vital_params_list, file=generation_best_file)
     print('best_x : ' + str(best_x), file=generation_best_file)
@@ -204,7 +220,7 @@ if  __name__ == '__main__':
         generation_best.append(temp)
         print(str(temp), file=generation_best_file)
     df = pd.DataFrame(generation_best)
-    df.to_csv(modelfile + 'result/binary_result/generation_best '+ name + ' sizePop=' + str(sizePop) + ' maxIter=' + str(maxIter) + '.csv', index=False)
+    df.to_csv(generation_best_directory + 'generation_best '+ name + ' sizePop=' + str(sizePop) + ' maxIter=' + str(maxIter) + ' ' + str(startTime.strftime( '%Y-%m-%d %H-%M-%S')) + '.csv', index=False)
 
     # %% Plot the binary_result
     import pandas as pd
@@ -215,7 +231,7 @@ if  __name__ == '__main__':
     ax[0].plot(Y_history.index, Y_history.values, '.', color='red')
     ax[0].set_title('binary GA ' + name)
     Y_history.min(axis=1).cummin().plot(kind='line')
-    plt.savefig(modelfile + 'result/binary_result/pic/binary ' + name + ' sizePop=' + str(sizePop) + ' maxIter=' + str(maxIter) + '.png')
+    plt.savefig(generation_best_pic_directory + 'binary ' + name + ' sizePop=' + str(sizePop) + ' maxIter=' + str(maxIter) + ' ' + str(startTime.strftime( '%Y-%m-%d %H-%M-%S')) + '.png')
     plt.show()
 
 

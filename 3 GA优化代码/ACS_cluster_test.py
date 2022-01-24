@@ -22,7 +22,7 @@ from sko.GA import GA,RCGA
 def build_model(name):
     if name.lower() == "lgb":
         model = lgb.LGBMRegressor()
-    elif name.lower() == "gdbt":
+    elif name.lower() == "gbdt":
         model = GradientBoostingRegressor()
     else:
         model = RandomForestRegressor()
@@ -150,7 +150,7 @@ if __name__ == '__main__':
     print('best_x : ' + str(best_x), file = logfile)
     print('best_y : ' + str(best_y), file = logfile)
 
-    # %% Plot the binary_result
+    # %% Plot the RCGA_result
     import pandas as pd
     import matplotlib.pyplot as plt
 
