@@ -80,30 +80,28 @@ def draw_target(bo):
     黑盒模型，传入参数，计算target（根据模型预测参数的执行时间）
 '''
 def black_box_function(params):
-    print('params = ' + str(params), file = logfile)
+    print('params = ' + str(params))
     model = build_training_model(name)
     runtime = model.predict(np.matrix([params]))[0]
     return runtime
 
 if __name__ == '__main__':
-    # 创建log文件追加内容
-    logfile = open('./log.txt', 'w')
-
 
     name = 'rf'
     # 重要参数
-    vital_params_path = './files100/' + name + "/selected_parameters.txt"
-    print(vital_params_path, file = logfile)
+    dir_path =  './random_terasort-20G_error_analysis_self/42'
+    vital_params_path = dir_path + '/' + name +  "/selected_parameters.txt"
+    print(vital_params_path)
     # 维护的参数-范围表
-    conf_range_table = "Spark_conf_range_wordcount.xlsx"
+    conf_range_table = "Spark_conf_range_terasort.xlsx"
     # 参数配置表（模型选出的最好配置参数）
-    generation_confs = './searching_config/' + name + "generationbestConf.csv"
+    generation_confs = dir_path + '/searching_config/' + name + "generationbestConf.csv"
 
     '''
         读取模型输出的重要参数
     '''
     vital_params = pd.read_csv(vital_params_path)
-    print(vital_params, file = logfile)
+    print(vital_params)
     # 参数范围和精度，从参数范围表里面获取
 
     # 参数范围表
@@ -127,7 +125,7 @@ if __name__ == '__main__':
             confUb.append(confDict[conf]['max'])
             precisions.append(confDict[conf]['pre'])
         else:
-            print(conf, '-----参数没有维护: ', '-----', file = logfile)
+            print(conf, '-----参数没有维护: ', '-----')
 
     # print(pbounds)
     '''
@@ -139,16 +137,14 @@ if __name__ == '__main__':
     nDim = len(vital_params)  # 参数个数
     sizePop = 30  # 种群数量
     maxIter = 10  # 迭代次数
-    # probMut = 0.01  # 变异概率
-    # probMut = 0.01
-    probMut = [0.01, 0.02, 0.05, 0.08, 0.2, 0.01, 0.02, 0.05, 0.08, 0.2]
+    probMut = 0.01  # 变异概率
     ga = GA(func=fitFunc, n_dim=nDim, size_pop=sizePop, max_iter=maxIter, prob_mut=probMut, lb=confLb, ub=confUb, precision=precisions)
     # ga = RCGA(func=fitFunc, n_dim=nDim, size_pop=sizePop, max_iter=maxIter, prob_mut=probMut, lb=confLb, ub=confUb)
     best_x, best_y = ga.run()
     endTime = datetime.datetime.now()
     searchDuration = (endTime - startTime).seconds
-    print('best_x : ' + str(best_x), file = logfile)
-    print('best_y : ' + str(best_y), file = logfile)
+    print('best_x : ' + str(best_x))
+    print('best_y : ' + str(best_y))
 
     # %% Plot the RCGA_result
     import pandas as pd
@@ -161,7 +157,6 @@ if __name__ == '__main__':
     Y_history.min(axis=1).cummin().plot(kind='line')
     plt.show()
 
-    logfile.close()
 
 
 
